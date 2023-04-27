@@ -285,6 +285,7 @@ import (
 	_ "github.com/solo-io/gloo/projects/gloo/pkg/api/external/envoy/api/v2/route"
 	_ "github.com/solo-io/gloo/projects/gloo/pkg/api/external/envoy/config/core/v3"
 	_ "github.com/solo-io/gloo/projects/gloo/pkg/api/external/envoy/config/filter/http/gzip/v2"
+	_ "github.com/solo-io/gloo/projects/gloo/pkg/api/external/envoy/config/matching/custom_matchers/server_name/v3"
 	_ "github.com/solo-io/gloo/projects/gloo/pkg/api/external/envoy/config/route/v3"
 	_ "github.com/solo-io/gloo/projects/gloo/pkg/api/external/envoy/config/trace/v3"
 	_ "github.com/solo-io/gloo/projects/gloo/pkg/api/external/envoy/extensions/advanced_http"

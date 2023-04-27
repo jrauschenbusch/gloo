@@ -5,6 +5,7 @@ Name|Version|License
 [avast/retry-go](https://github.com/avast/retry-go)|v2.4.3+incompatible|MIT License
 [aws/aws-sdk-go](https://github.com/aws/aws-sdk-go)|v1.34.9|Apache License 2.0
 [census-instrumentation/opencensus-proto](https://github.com/census-instrumentation/opencensus-proto)|v0.2.0|Apache License 2.0
+[xds/go](https://github.com/cncf/xds)|v0.0.0-20220314180256-7f1daf1720fc|Apache License 2.0
 [cratonica/2goarray](https://github.com/cratonica/2goarray)|v0.0.0-20190331194516-514510793eaa|MIT License
 [envoyproxy/go-control-plane](https://github.com/envoyproxy/go-control-plane)|v0.11.0|Apache License 2.0
 [envoyproxy/protoc-gen-validate](https://github.com/envoyproxy/protoc-gen-validate)|v0.9.1|Apache License 2.0
@@ -43,6 +44,7 @@ Name|Version|License
 [go.uber.org/goleak](https://go.uber.org/goleak)|v1.2.0|MIT License
 [go.uber.org/multierr](https://go.uber.org/multierr)|v1.6.0|MIT License
 [go.uber.org/zap](https://go.uber.org/zap)|v1.21.0|MIT License
+[x/exp](https://golang.org/x/exp)|v0.0.0-20230425010034-47ecfdc1ba53|BSD 3-clause "New" or "Revised" License
 [x/sync](https://golang.org/x/sync)|v0.1.0|BSD 3-clause "New" or "Revised" License
 [x/tools](https://golang.org/x/tools)|v0.7.0|BSD 3-clause "New" or "Revised" License
 [google.golang.org/genproto](https://google.golang.org/genproto)|v0.0.0-20221201164419-0e50fba7f41c|Apache License 2.0
