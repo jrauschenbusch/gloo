@@ -11,6 +11,7 @@ import (
 	server_name_v3 "github.com/solo-io/gloo/projects/gloo/pkg/api/external/envoy/config/matching/custom_matchers/server_name/v3"
 	"github.com/solo-io/gloo/projects/gloo/pkg/utils"
 	"golang.org/x/exp/slices"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 type ExtendedFilterChain struct {
@@ -102,12 +103,13 @@ func convertIr(serverNameMap serverNameMap) *matcher_v3.Matcher {
 	for serverName, sourceIpCidrMap := range serverNameMap {
 		// create a server name matcher:
 		if serverName == "" {
-			matcher.OnNoMatch = soruceCidrMapOnMatch(sourceIpCidrMap)
+			matcher.OnNoMatch = sourceCidrMapOnMatch(sourceIpCidrMap)
+		} else {
+			snm.ServerNameMatchers = append(snm.ServerNameMatchers, &server_name_v3.ServerNameMatcher_ServerNameSetMatcher{
+				ServerNames: []string{serverName},
+				OnMatch:     sourceCidrMapOnMatch(sourceIpCidrMap),
+			})
 		}
-		snm.ServerNameMatchers = append(snm.ServerNameMatchers, &server_name_v3.ServerNameMatcher_ServerNameSetMatcher{
-			ServerNames: []string{serverName},
-			OnMatch:     soruceCidrMapOnMatch(sourceIpCidrMap),
-		})
 	}
 
 	matcher.MatcherType = &matcher_v3.Matcher_MatcherTree_{
@@ -121,9 +123,45 @@ func convertIr(serverNameMap serverNameMap) *matcher_v3.Matcher {
 	return &matcher
 }
 
-func soruceCidrMapOnMatch(sourceIpCidrMap sourceIpCidrMap) *matcher_v3.Matcher_OnMatch {
-	panic("not implemented")
+func sourceCidrMapOnMatch(sourceIpCidrMap sourceIpCidrMap) *matcher_v3.Matcher_OnMatch {
+	matcher := &matcher_v3.Matcher{}
 
+	onMatch := &matcher_v3.Matcher_OnMatch{
+		OnMatch: &matcher_v3.Matcher_OnMatch_Matcher{
+			Matcher: matcher,
+		},
+	}
+
+	ipTrieMatcher := &matcher_v3.IPMatcher{}
+	for sourceIpCidr, deprecatedCipherMap := range sourceIpCidrMap {
+		if sourceIpCidr == noIpRanges {
+			matcher.OnNoMatch = deprecatedCipherOnMatch(deprecatedCipherMap)
+		} else {
+			ipTrieMatcher.RangeMatchers = append(ipTrieMatcher.RangeMatchers, &matcher_v3.IPMatcher_IPRangeMatcher{
+				Ranges: []*core_v3.CidrRange{{
+					AddressPrefix: sourceIpCidr.AddressPrefix,
+					PrefixLen:     wrapperspb.UInt32(sourceIpCidr.PrefixLen),
+				}},
+				OnMatch:   deprecatedCipherOnMatch(deprecatedCipherMap),
+				Exclusive: true,
+			})
+		}
+
+	}
+
+	matcher.MatcherType = &matcher_v3.Matcher_MatcherTree_{
+		MatcherTree: &matcher_v3.Matcher_MatcherTree{
+			Input: toTypedExtensionConfig("envoy.matching.custom_matchers.trie_matcher", &network_inputs_v3.ServerNameInput{}),
+			TreeType: &matcher_v3.Matcher_MatcherTree_CustomMatch{
+				CustomMatch: toTypedExtensionConfig("envoy.matching.custom_matchers.server_name_matcher", ipTrieMatcher),
+			},
+		},
+	}
+	return onMatch
+}
+
+func deprecatedCipherOnMatch(deprecatedCipherMap deprecatedCipherMap) *matcher_v3.Matcher_OnMatch {
+	panic("implement me")
 }
 
 func addFilterChainToMap(serverNameMap serverNameMap, fc ExtendedFilterChain) error {
