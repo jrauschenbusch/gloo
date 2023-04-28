@@ -151,9 +151,9 @@ func sourceCidrMapOnMatch(sourceIpCidrMap sourceIpCidrMap) *matcher_v3.Matcher_O
 
 	matcher.MatcherType = &matcher_v3.Matcher_MatcherTree_{
 		MatcherTree: &matcher_v3.Matcher_MatcherTree{
-			Input: toTypedExtensionConfig("envoy.matching.custom_matchers.trie_matcher", &network_inputs_v3.ServerNameInput{}),
+			Input: toTypedExtensionConfig("envoy.matching.inputs.source_ip", &network_inputs_v3.SourceIPInput{}),
 			TreeType: &matcher_v3.Matcher_MatcherTree_CustomMatch{
-				CustomMatch: toTypedExtensionConfig("envoy.matching.custom_matchers.server_name_matcher", ipTrieMatcher),
+				CustomMatch: toTypedExtensionConfig("envoy.matching.custom_matchers.trie_matcher", ipTrieMatcher),
 			},
 		},
 	}
